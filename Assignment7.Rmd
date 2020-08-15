@@ -1,0 +1,90 @@
+---
+title: "Visualizing Economic Data in R"
+author: "Serdar Goler"
+date: "November 19, 2019"
+output: html_document
+---
+
+## Introduction
+
+Bar Charts have become one of the most popular ways of visualizing data. They are aesthetically pleasing and require little explanation.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source('Assignment7.r')
+```
+
+## R Packages and Dependencies
+
+This post will focus on using the R visualization package ggplot2, which is found in the tidyverse package. The ggplot2 package is used to create bar charts.
+
+
+```{r cars}
+library(readxl)
+library(tidyverse)
+library(grid)
+library(gridExtra)
+library(ggplot2)
+```
+
+The data sourcing and wrangling code is not included in this document, but can be found [here](https://github.com/plotly/datasets/blob/master/2014_world_gdp_with_codes.csv).
+
+## What is a bar chart?
+
+A bar chart represents data in rectangular bars with length of the bar proportional to the value of the variable. R uses the function barplot() to create bar charts. R can draw both vertical and Horizontal bars in the bar chart. In bar chart each of the bars can be given different colors.
+
+Consider the following bar chart:
+
+```{r pressure, echo=FALSE}
+smalldata %>% 
+  ggplot()+
+  geom_bar(mapping=aes(x=COUNTRY, y=GDP..BILLIONS., fill = GDP..BILLIONS.), stat = 'identity') + 
+  coord_flip() +
+  ylab("GDP ($, billions)") +
+  xlab('Country') +
+  ggtitle('Top 30 GDP by Country in 2014') +
+  theme(
+    plot.title = element_text(color="red", size=14, face="bold.italic"),
+    axis.title.x = element_text(color="blue", size=14, face="bold"),
+    axis.title.y = element_text(color="blue", size=14, face="bold")
+  )
+```
+
+What conclusions about state GDP can you draw from this plot? You might notice that in 2014:
+
+* United States had the highest GDP
+* Japan and China had high GDPs
+
+From this chart, we can identify that there is no relationship between geography and GDP. States with high GDPs are far away from each other, but we gain nice understanding of which countries are highest producers in the world.
+
+While this chart looks pretty and provides a good bit of economic information, it has many analytical shortcomings. The first main weakness to this chart is that we cannot see the difference in GDP and net ranking among countries. The simplest way to visualize the difference in GDP between each state would be to create a bar chart.
+
+```{r abc, echo=FALSE}
+smalldata %>% 
+  ggplot()+
+  geom_bar(mapping=aes(x=reorder(COUNTRY, GDP..BILLIONS.), y=GDP..BILLIONS., fill = GDP..BILLIONS.), stat = 'identity') +
+  coord_flip() +
+  ylab("GDP ($, billions)") +
+  xlab('Country') +
+  ggtitle('Top 30 GDP by Country in 2014') +
+  theme(
+    plot.title = element_text(color="red", size=14, face="bold.italic"),
+    axis.title.x = element_text(color="blue", size=14, face="bold"),
+    axis.title.y = element_text(color="blue", size=14, face="bold")
+  )
+```
+
+The bar chart is the best visual for communicating just how much larger USA’s GDP is than any other country. When looking at our original chart, you may have noticed China and Japan were the second and third ranking states; however, it was not clear that China was almost two times more than the other countries except for USA!
+
+On our original chart, the difference in GDP between USA and the countries which rank below was too small to notice a how big are differences.
+
+## Conclusion
+
+The bar chart best visualizes the difference in GDP.
+
+#### Sources
+
+1. https://github.com/plotly/datasets/blob/master/2014_world_gdp_with_codes.csv
+2. https://www.markdownguide.org/
+3. https://www.r-graph-gallery.com/index.html
+4. https://www.tutorialspoint.com/r/r_bar_charts.htm
